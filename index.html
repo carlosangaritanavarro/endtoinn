@@ -139,25 +139,31 @@
             }, duration); // Pantalla negra por la duración especificada
         }
 
+        // Detectar clics en la página, pero evitar que se active cuando se haga clic en los botones
+        document.body.addEventListener('click', function(e) {
+            // Si el clic no es en los botones "Siguiente" o "Anterior"
+            if (e.target.id !== 'next-page' && e.target.id !== 'prev-page') {
+                showBlackScreen(2000);  // Mostrar la pantalla negra durante 2 segundos
+            }
+        });
+
         // Detectar teclas presionadas para activar la pantalla negra
         document.body.addEventListener('keydown', function(e) {
-            // Detectar la tecla 'PrintScreen' y combinaciones en Windows
+            // Windows - Detectar las teclas PrintScreen, Ctrl + PrintScreen, PrtSc, Windows + PrintScreen
             if (e.key === 'PrintScreen' || e.key === 'PrtSc' || e.key === 'impPt' || 
                 (e.ctrlKey && e.key === 'PrintScreen') || 
-                (e.key === 'PrintScreen' && e.metaKey)) { 
-                // Para Windows
-                showBlackScreen(3000); // Pantalla negra por 3 segundos
+                (e.key === 'PrintScreen' && e.metaKey)) {
+                showBlackScreen(3000); // Pantalla negra por 3 segundos en Windows
             }
 
-            // Detectar combinaciones para Mac
-            // Shift + Command + 5 (Captura de pantalla en macOS)
+            // Mac - Detectar Shift + Command + 5 (Captura de pantalla)
             if (e.shiftKey && e.metaKey && e.key === '5') {
-                showBlackScreen(3000); // Pantalla negra por 3 segundos
+                showBlackScreen(3000); // Pantalla negra por 3 segundos en Mac
             }
 
-            // Shift + Command + 4 (Captura de pantalla en macOS)
+            // Mac - Detectar Shift + Command + 4 (Captura de pantalla)
             if (e.shiftKey && e.metaKey && e.key === '4') {
-                showBlackScreen(10000); // Pantalla negra por 10 segundos
+                showBlackScreen(10000); // Pantalla negra por 10 segundos en Mac
             }
         });
 
