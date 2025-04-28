@@ -136,18 +136,10 @@
             }, 2000); // Pantalla negra por 2 segundos
         }
 
-        // Detectar teclas de captura de pantalla (PrintScreen, PrtSc, etc.)
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'PrintScreen' || e.key === 'PrtSc' || e.key === 'F12') {
-                // Mostrar pantalla negra cuando se detecta captura de pantalla
-                showBlackScreen();
-            }
-        });
-
-        // Detectar la visibilidad del documento (cuando cambia de pestaña o minimiza la ventana)
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                // Mostrar pantalla negra cuando la página no está visible
+        // Detectar clics en toda la página, excepto en los botones
+        document.body.addEventListener('click', function(e) {
+            // Si el clic no es en los botones "Siguiente" o "Anterior"
+            if (e.target.id !== 'next-page' && e.target.id !== 'prev-page') {
                 showBlackScreen();
             }
         });
