@@ -47,6 +47,21 @@
             width: 100%;
             height: auto;
         }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -56,31 +71,61 @@
             <!-- Aquí cargaremos el PDF usando PDF.js -->
             <canvas id="pdf-viewer"></canvas>
         </div>
+        <div class="controls">
+            <button id="prev-page">Anterior</button>
+            <button id="next-page">Siguiente</button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
-        const url = "https://carlosangaritanavarro.github.io/presentacionesefectivas/Modelo.pdf";
+        const url = "https://carlosangaritanavarro.github.io/presentacionesefectivas/presentacionesefectivas.pdf";
 
         const canvas = document.getElementById('pdf-viewer');
         const context = canvas.getContext('2d');
 
+        let currentPage = 1; // Página inicial
+        let pdfDoc = null;   // Documento PDF
+        let totalPages = 0;  // Total de páginas
+
         // Cargar el documento PDF
         pdfjsLib.getDocument(url).promise.then(pdf => {
-            pdf.getPage(1).then(page => {
+            pdfDoc = pdf;
+            totalPages = pdf.numPages;
+            renderPage(currentPage);
+        });
+
+        // Función para renderizar la página
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(page => {
                 const scale = 1.5; // Escala de la página
                 const viewport = page.getViewport({ scale: scale });
 
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
 
-                // Dibujar el contenido de la página en el lienzo (canvas)
                 const renderContext = {
                     canvasContext: context,
                     viewport: viewport
                 };
                 page.render(renderContext);
             });
+        }
+
+        // Cambiar a la página siguiente
+        document.getElementById('next-page').addEventListener('click', function() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+
+        // Cambiar a la página anterior
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
         });
 
         // Detectar la tecla de imprimir pantalla (PrtSc)
