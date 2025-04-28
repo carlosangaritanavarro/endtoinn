@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación Protegida</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .content {
+            width: 80%;
+            height: 90%;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .black-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0.8;
+            display: none;
+            z-index: 1;
+        }
+
+        .pdf-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="black-screen" id="black-screen"></div>
+    <div class="content">
+        <div class="pdf-container" id="pdf-container">
+            <!-- Aquí insertamos el archivo PDF -->
+            <iframe src="Modelo.pdf" title="Presentación"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Detectar la tecla de imprimir pantalla (PrtSc)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'PrintScreen' || e.key === 'PrtSc') {
+                document.getElementById('black-screen').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('black-screen').style.display = 'none';
+                }, 2000); // Pantalla negra por 2 segundos
+            }
+        });
+
+        // Detectar la visibilidad del documento (cuando cambia de pestaña o minimiza la ventana)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.getElementById('black-screen').style.display = 'block';
+            } else {
+                document.getElementById('black-screen').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
