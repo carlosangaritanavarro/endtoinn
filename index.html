@@ -15,6 +15,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            pointer-events: none; /* Deshabilita la interacción con la página */
         }
 
         .content {
@@ -24,6 +25,7 @@
             z-index: 2;
             overflow: hidden;
             text-align: center;
+            pointer-events: all; /* Permite solo los botones */
         }
 
         .black-screen {
@@ -68,7 +70,7 @@
     <div class="black-screen" id="black-screen"></div>
     <div class="content">
         <div class="pdf-container" id="pdf-container">
-            <!-- Aquí cargaremos el PDF usando PDF.js -->
+            <!-- Aquí cargamos el PDF usando PDF.js -->
             <canvas id="pdf-viewer"></canvas>
         </div>
         <div class="controls">
@@ -128,29 +130,27 @@
             }
         });
 
-        // Detectar la tecla de imprimir pantalla (PrtSc)
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'PrintScreen' || e.key === 'PrtSc' || e.key === 'F12') {
-                // Mostrar pantalla negra por 2 segundos
-                document.getElementById('black-screen').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('black-screen').style.display = 'none';
-                }, 2000); // Pantalla negra por 2 segundos
-            }
-        });
-
-        // Detectar la visibilidad del documento (cuando cambia de pestaña o minimiza la ventana)
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                document.getElementById('black-screen').style.display = 'block';
-            } else {
-                document.getElementById('black-screen').style.display = 'none';
-            }
-        });
-
-        // Deshabilitar el clic derecho en toda la página
+        // Deshabilitar clic derecho en la página (no se puede abrir el menú contextual)
         document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();  // Evita que se abra el menú contextual (clic derecho)
+            e.preventDefault();  // Evita el menú contextual
+        });
+
+        // Prevenir el cierre de la página (advertencia al intentar cerrar o redirigir)
+        window.addEventListener('beforeunload', function(event) {
+            event.preventDefault();
+            event.returnValue = '';  // Algunos navegadores muestran una advertencia al cerrar
+        });
+
+        // Evitar el desplazamiento en la página (no se puede desplazar con la rueda del mouse)
+        document.body.addEventListener('wheel', function(e) {
+            e.preventDefault();
+        });
+
+        // Evitar el zoom en la página
+        document.body.addEventListener('keydown', function(e) {
+            if (e.key === '+' || e.key === '-') {
+                e.preventDefault();  // Prevenir el zoom
+            }
         });
     </script>
 </body>
