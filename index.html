@@ -130,7 +130,7 @@
 
         // Detectar la tecla de imprimir pantalla (PrtSc)
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'PrintScreen' || e.key === 'PrtSc') {
+            if (e.key === 'PrintScreen' || e.key === 'PrtSc' || e.key === 'F12') {
                 // Mostrar pantalla negra por 2 segundos
                 document.getElementById('black-screen').style.display = 'block';
                 setTimeout(() => {
@@ -151,15 +151,6 @@
         // Deshabilitar el clic derecho en toda la página
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();  // Evita que se abra el menú contextual (clic derecho)
-        });
-
-        // Proteger contra la captura de pantallas: Capa adicional
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                document.getElementById('black-screen').style.display = 'block';
-            } else {
-                document.getElementById('black-screen').style.display = 'none';
-            }
         });
     </script>
 </body>
