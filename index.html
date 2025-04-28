@@ -43,10 +43,9 @@
             height: 100%;
         }
 
-        iframe {
+        canvas {
             width: 100%;
-            height: 100%;
-            border: none;
+            height: auto;
         }
     </style>
 </head>
@@ -54,12 +53,36 @@
     <div class="black-screen" id="black-screen"></div>
     <div class="content">
         <div class="pdf-container" id="pdf-container">
-            <!-- Usar Google Docs Viewer para cargar el PDF -->
-            <iframe src="https://docs.google.com/gview?url=https://carlosangaritanavarro.github.io/presentacionesefectivas/Modelo.pdf&embedded=true" title="Presentación"></iframe>
+            <!-- Aquí cargaremos el PDF usando PDF.js -->
+            <canvas id="pdf-viewer"></canvas>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
+        const url = "https://carlosangaritanavarro.github.io/presentacionesefectivas/Modelo.pdf";
+
+        const canvas = document.getElementById('pdf-viewer');
+        const context = canvas.getContext('2d');
+
+        // Cargar el documento PDF
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            pdf.getPage(1).then(page => {
+                const scale = 1.5; // Escala de la página
+                const viewport = page.getViewport({ scale: scale });
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                // Dibujar el contenido de la página en el lienzo (canvas)
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+            });
+        });
+
         // Detectar la tecla de imprimir pantalla (PrtSc)
         document.addEventListener('keydown', function(e) {
             if (e.key === 'PrintScreen' || e.key === 'PrtSc') {
@@ -78,12 +101,6 @@
             } else {
                 document.getElementById('black-screen').style.display = 'none';
             }
-        });
-
-        // Detectar si el PDF está siendo descargado o abierto en una nueva pestaña
-        const iframe = document.querySelector('iframe');
-        iframe.addEventListener('load', function() {
-            console.log('PDF cargado correctamente');
         });
     </script>
 </body>
