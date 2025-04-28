@@ -147,6 +147,11 @@
                 document.getElementById('black-screen').style.display = 'none';
             }
         });
+
+        // Deshabilitar el clic derecho en toda la página
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();  // Evita que se abra el menú contextual (clic derecho)
+        });
     </script>
 </body>
 </html>
