@@ -15,7 +15,6 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            pointer-events: none; /* Deshabilita la interacción con la página */
         }
 
         .content {
@@ -25,7 +24,6 @@
             z-index: 2;
             overflow: hidden;
             text-align: center;
-            pointer-events: all; /* Permite solo los botones */
         }
 
         .black-screen {
@@ -130,18 +128,42 @@
             }
         });
 
-        // Deshabilitar clic derecho en la página (no se puede abrir el menú contextual)
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();  // Evita el menú contextual
+        // Función para mostrar la capa negra durante 2 segundos
+        function showBlackScreen() {
+            document.getElementById('black-screen').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('black-screen').style.display = 'none';
+            }, 2000); // Pantalla negra por 2 segundos
+        }
+
+        // Detectar teclas de captura de pantalla (PrintScreen, PrtSc, etc.)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'PrintScreen' || e.key === 'PrtSc' || e.key === 'F12') {
+                // Mostrar pantalla negra cuando se detecta captura de pantalla
+                showBlackScreen();
+            }
         });
 
-        // Prevenir el cierre de la página (advertencia al intentar cerrar o redirigir)
+        // Detectar la visibilidad del documento (cuando cambia de pestaña o minimiza la ventana)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // Mostrar pantalla negra cuando la página no está visible
+                showBlackScreen();
+            }
+        });
+
+        // Deshabilitar clic derecho en toda la página
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();  // Evita que se abra el menú contextual (clic derecho)
+        });
+
+        // Prevenir el cierre de la página (advertencia al intentar cerrar)
         window.addEventListener('beforeunload', function(event) {
             event.preventDefault();
             event.returnValue = '';  // Algunos navegadores muestran una advertencia al cerrar
         });
 
-        // Evitar el desplazamiento en la página (no se puede desplazar con la rueda del mouse)
+        // Evitar el desplazamiento en la página
         document.body.addEventListener('wheel', function(e) {
             e.preventDefault();
         });
