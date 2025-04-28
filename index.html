@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación Protegida</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
+        .content {
+            width: 80%;
+            height: 90%;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .black-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0.8;
+            display: none;
+            z-index: 1;
+        }
+
+        .pdf-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="black-screen" id="black-screen"></div>
+    <div class="content">
+        <div class="pdf-container" id="pdf-container">
+            <!-- Aquí cargaremos el PDF usando PDF.js -->
+            <canvas id="pdf-viewer"></canvas>
+        </div>
+        <div class="controls">
+            <button id="prev-page">Anterior</button>
+            <button id="next-page">Siguiente</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        const url = "https://carlosangaritanavarro.github.io/presentacionesefectivas/presentacionesefectivas.pdf";
+
+        const canvas = document.getElementById('pdf-viewer');
+        const context = canvas.getContext('2d');
+
+        let currentPage = 1; // Página inicial
+        let pdfDoc = null;   // Documento PDF
+        let totalPages = 0;  // Total de páginas
+
+        // Cargar el documento PDF
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            pdfDoc = pdf;
+            totalPages = pdf.numPages;
+            renderPage(currentPage);
+        });
+
+        // Función para renderizar la página
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(page => {
+                const scale = 1.5; // Escala de la página
+                const viewport = page.getViewport({ scale: scale });
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+            });
+        }
+
+        // Cambiar a la página siguiente
+        document.getElementById('next-page').addEventListener('click', function() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+
+        // Cambiar a la página anterior
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        });
+
+        // Detectar la tecla de imprimir pantalla (PrtSc)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'PrintScreen' || e.key === 'PrtSc') {
+                // Mostrar pantalla negra por 2 segundos
+                document.getElementById('black-screen').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('black-screen').style.display = 'none';
+                }, 2000); // Pantalla negra por 2 segundos
+            }
+        });
+
+        // Detectar la visibilidad del documento (cuando cambia de pestaña o minimiza la ventana)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.getElementById('black-screen').style.display = 'block';
+            } else {
+                document.getElementById('black-screen').style.display = 'none';
+            }
+        });
+
+        // Deshabilitar el clic derecho en toda la página
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();  // Evita que se abra el menú contextual (clic derecho)
+        });
+
+        // Proteger contra la captura de pantallas: Capa adicional
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                document.getElementById('black-screen').style.display = 'block';
+            } else {
+                document.getElementById('black-screen').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
