@@ -136,11 +136,11 @@
             }, 2000); // Pantalla negra por 2 segundos
         }
 
-        // Detectar clics en toda la página, excepto en los botones
+        // Detectar clics en la página, pero evitar que se active cuando se haga clic en los botones
         document.body.addEventListener('click', function(e) {
             // Si el clic no es en los botones "Siguiente" o "Anterior"
             if (e.target.id !== 'next-page' && e.target.id !== 'prev-page') {
-                showBlackScreen();
+                showBlackScreen();  // Mostrar la pantalla negra
             }
         });
 
