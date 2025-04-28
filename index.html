@@ -15,7 +15,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            position: relative; /* Necesario para apilar elementos */
+            position: relative; /* Necesario para apilar la capa negra */
         }
 
         .content {
@@ -34,14 +34,16 @@
             width: 100%;
             height: 100%;
             background-color: black;
-            opacity: 10;
+            opacity: 1;
             display: none;
-            z-index: 10; /* Asegura que la pantalla negra esté encima de la presentación */
+            z-index: 10; /* Asegura que la pantalla negra esté encima de la página */
         }
 
         .pdf-container {
             width: 100%;
             height: 100%;
+            position: relative; /* Asegura que el visor de PDF quede por encima de la capa negra */
+            z-index: 20;
         }
 
         canvas {
@@ -54,7 +56,7 @@
             top: 10px;
             width: 100%;
             text-align: center;
-            z-index: 20; /* Asegura que los botones estén encima de la pantalla negra */
+            z-index: 30; /* Asegura que los botones estén encima de todo */
         }
 
         button {
@@ -129,19 +131,33 @@
             }
         });
 
-        // Función para mostrar la capa negra durante 2 segundos
-        function showBlackScreen() {
+        // Función para mostrar la capa negra durante el tiempo indicado
+        function showBlackScreen(duration) {
             document.getElementById('black-screen').style.display = 'block';
             setTimeout(() => {
                 document.getElementById('black-screen').style.display = 'none';
-            }, 2000); // Pantalla negra por 2 segundos
+            }, duration); // Pantalla negra por la duración especificada
         }
 
-        // Detectar clics en la página, pero evitar que se active cuando se haga clic en los botones
-        document.body.addEventListener('click', function(e) {
-            // Si el clic no es en los botones "Siguiente" o "Anterior"
-            if (e.target.id !== 'next-page' && e.target.id !== 'prev-page') {
-                showBlackScreen();  // Mostrar la pantalla negra
+        // Detectar teclas presionadas para activar la pantalla negra
+        document.body.addEventListener('keydown', function(e) {
+            // Detectar la tecla 'PrintScreen' y combinaciones en Windows
+            if (e.key === 'PrintScreen' || e.key === 'PrtSc' || e.key === 'impPt' || 
+                (e.ctrlKey && e.key === 'PrintScreen') || 
+                (e.key === 'PrintScreen' && e.metaKey)) { 
+                // Para Windows
+                showBlackScreen(3000); // Pantalla negra por 3 segundos
+            }
+
+            // Detectar combinaciones para Mac
+            // Shift + Command + 5 (Captura de pantalla en macOS)
+            if (e.shiftKey && e.metaKey && e.key === '5') {
+                showBlackScreen(3000); // Pantalla negra por 3 segundos
+            }
+
+            // Shift + Command + 4 (Captura de pantalla en macOS)
+            if (e.shiftKey && e.metaKey && e.key === '4') {
+                showBlackScreen(10000); // Pantalla negra por 10 segundos
             }
         });
 
