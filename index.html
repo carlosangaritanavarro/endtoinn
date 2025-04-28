@@ -55,7 +55,7 @@
     <div class="content">
         <div class="pdf-container" id="pdf-container">
             <!-- Usar Google Docs Viewer para cargar el PDF -->
-            <iframe src="https://docs.google.com/gview?url=https://carlosangaritanavarro.github.io/presentacionesefectivas/modelo.pdf&embedded=true" title="Presentación"></iframe>
+            <iframe src="https://docs.google.com/gview?url=https://<tu-usuario>.github.io/<nombre-del-repositorio>/presentacion.pdf&embedded=true" title="Presentación"></iframe>
         </div>
     </div>
 
@@ -63,6 +63,7 @@
         // Detectar la tecla de imprimir pantalla (PrtSc)
         document.addEventListener('keydown', function(e) {
             if (e.key === 'PrintScreen' || e.key === 'PrtSc') {
+                // Mostrar pantalla negra por 2 segundos
                 document.getElementById('black-screen').style.display = 'block';
                 setTimeout(() => {
                     document.getElementById('black-screen').style.display = 'none';
@@ -77,6 +78,12 @@
             } else {
                 document.getElementById('black-screen').style.display = 'none';
             }
+        });
+
+        // Detectar si el PDF está siendo descargado o abierto en una nueva pestaña
+        const iframe = document.querySelector('iframe');
+        iframe.addEventListener('load', function() {
+            console.log('PDF cargado correctamente');
         });
     </script>
 </body>
