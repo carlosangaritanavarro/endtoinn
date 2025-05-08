@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio de Servicios</title>
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a mi Portafolio de Servicios</h1>
+    </header>
+    
+    <section>
+        <h2>Servicios que ofrezco:</h2>
+        <ul>
+            <li>Diseño gráfico</li>
+            <li>Desarrollo web</li>
+            <li>Consultoría tecnológica</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>Contáctame en: correo@ejemplo.com</p>
+    </footer>
+</body>
+</html>
