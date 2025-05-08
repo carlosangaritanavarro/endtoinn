@@ -3,24 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio de Servicios</title>
+    <title>Portafolio PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .content {
+            width: 80%;
+            height: 90%;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .pdf-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 20;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 30;
+        }
+
+        button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Bienvenido a mi Portafolio de Servicios</h1>
-    </header>
-    
-    <section>
-        <h2>Servicios que ofrezco:</h2>
-        <ul>
-            <li>Diseño gráfico</li>
-            <li>Desarrollo web</li>
-            <li>Consultoría tecnológica</li>
-        </ul>
-    </section>
+    <div class="content">
+        <div class="pdf-container" id="pdf-container">
+            <!-- Aquí cargamos el PDF usando PDF.js -->
+            <canvas id="pdf-viewer"></canvas>
+        </div>
+        <div class="controls">
+            <button id="prev-page">Anterior</button>
+            <button id="next-page">Siguiente</button>
+        </div>
+    </div>
 
-    <footer>
-        <p>Contáctame en: correo@ejemplo.com</p>
-    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        // URL del nuevo PDF
+        const url = "https://carlosangaritanavarro.github.io/endtoinn/Portafolio%20End%20To%20Inn.pdf";  // Cambiar si el PDF está en una carpeta diferente
+
+        const canvas = document.getElementById('pdf-viewer');
+        const context = canvas.getContext('2d');
+
+        let currentPage = 1; // Página inicial
+        let pdfDoc = null;   // Documento PDF
+        let totalPages = 0;  // Total de páginas
+
+        // Cargar el documento PDF
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            pdfDoc = pdf;
+            totalPages = pdf.numPages;
+            renderPage(currentPage);
+        });
+
+        // Función para renderizar la página
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(page => {
+                const scale = 1.5; // Escala de la página
+                const viewport = page.getViewport({ scale: scale });
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+            });
+        }
+
+        // Cambiar a la página siguiente
+        document.getElementById('next-page').addEventListener('click', function() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+
+        // Cambiar a la página anterior
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        });
+
+    </script>
 </body>
 </html>
