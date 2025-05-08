@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio PDF</title>
+    <title>Portafolio de Servicios End To Inn</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             margin: 0;
             padding: 0;
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            position: relative;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         .content {
@@ -53,9 +52,41 @@
             font-size: 16px;
             cursor: pointer;
         }
+
+        /* Título */
+        h1 {
+            color: #4b0082;  /* Un tono púrpura armónico */
+            font-size: 2em;
+            margin: 20px 0;
+        }
+
+        /* Texto de derechos reservados */
+        .rights-text {
+            font-size: 1.2em;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        /* Botón de regreso */
+        .back-btn {
+            margin-top: 20px;
+            padding: 15px 25px;
+            font-size: 16px;
+            color: white;
+            background-color: #6a1b9a;  /* Un tono púrpura suave */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background-color: #8e24aa;  /* Cambiar a un color más brillante al pasar el mouse */
+        }
     </style>
 </head>
 <body>
+    <h1>Portafolio de Servicios End To Inn</h1>  <!-- Título agregado -->
+
     <div class="content">
         <div class="pdf-container" id="pdf-container">
             <!-- Aquí cargamos el PDF usando PDF.js -->
@@ -67,10 +98,18 @@
         </div>
     </div>
 
+    <!-- Texto de derechos reservados -->
+    <div class="rights-text">
+        Derechos Reservados, este contenido no podrá ser usado sin autorización de End To Inn.
+    </div>
+
+    <!-- Botón para regresar a la página principal -->
+    <button class="back-btn" onclick="window.location.href='https://carlosangaritanavarro.github.io/endtoinn/'">Volver a la Página Principal</button>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
-        // URL del nuevo PDF
-        const url = "https://carlosangaritanavarro.github.io/endtoinn/Portafolio%20End%20To%20Inn.pdf";  // Cambiar si el PDF está en una carpeta diferente
+        // Cambia la URL aquí por el enlace al nuevo PDF
+        const url = "https://carlosangaritanavarro.github.io/endtoinn/Portafolio%20End%20To%20Inn.pdf";  // Reemplaza con la URL del nuevo PDF
 
         const canvas = document.getElementById('pdf-viewer');
         const context = canvas.getContext('2d');
@@ -118,7 +157,6 @@
                 renderPage(currentPage);
             }
         });
-
     </script>
 </body>
 </html>
