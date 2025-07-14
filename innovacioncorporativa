@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación Protegida</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .content {
+            width: 80%;
+            height: 90%;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .black-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 1;
+            display: none;
+            z-index: 10;
+        }
+
+        .pdf-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 20;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 30;
+        }
+
+        button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Estilos para la impresión */
+        @media print {
+            body {
+                background-color: black !important;  /* Fondo negro en la impresión */
+                color: white !important;  /* Texto blanco */
+            }
+            .content, .controls {
+                display: none !important;  /* Elimina controles y contenido visible durante la impresión */
+            }
+            .black-screen {
+                display: block !important;  /* Muestra la capa negra durante la impresión */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="black-screen" id="black-screen"></div>
+    <div class="content">
+        <div class="pdf-container" id="pdf-container">
+            <!-- Aquí cargamos el PDF usando PDF.js -->
+            <canvas id="pdf-viewer"></canvas>
+        </div>
+        <div class="controls">
+            <button id="prev-page">Anterior</button>
+            <button id="next-page">Siguiente</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        const url = "https://carlosangaritanavarro.github.io/endtoinn/memorias_innovacion_corporativa_watermark.pdf"; // URL del archivo PDF
+
+        const canvas = document.getElementById('pdf-viewer');
+        const context = canvas.getContext('2d');
+
+        let currentPage = 1; // Página inicial
+        let pdfDoc = null;   // Documento PDF
+        let totalPages = 0;  // Total de páginas
+
+        // Cargar el documento PDF
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            pdfDoc = pdf;
+            totalPages = pdf.numPages;
+            renderPage(currentPage);
+        });
+
+        // Función para renderizar la página
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(page => {
+                const scale = 1.5; // Escala de la página
+                const viewport = page.getViewport({ scale: scale });
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+            });
+        }
+
+        // Cambiar a la página siguiente
+        document.getElementById('next-page').addEventListener('click', function() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        });
+
+        // Cambiar a la página anterior
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        });
+
+        // Función para mostrar la capa negra durante 2 segundos
+        function showBlackScreen(duration) {
+            document.getElementById('black-screen').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('black-screen').style.display = 'none';
+            }, duration); // Pantalla negra por la duración especificada
+        }
+
+        // Detectar clics en la página, pero evitar que se active cuando se haga clic en los botones
+        document.body.addEventListener('click', function(e) {
+            if (e.target.id !== 'next-page' && e.target.id !== 'prev-page') {
+                showBlackScreen(2000);  // Mostrar la pantalla negra durante 2 segundos
+            }
+        });
+
+        // Deshabilitar clic derecho en toda la página
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();  // Evita que se abra el menú contextual (clic derecho)
+        });
+
+        // Prevenir el cierre de la página (advertencia al intentar cerrar)
+        window.addEventListener('beforeunload', function(event) {
+            event.preventDefault();
+            event.returnValue = '';  // Algunos navegadores muestran una advertencia al cerrar
+        });
+
+        // Evitar el desplazamiento en la página
+        document.body.addEventListener('wheel', function(e) {
+            e.preventDefault();
+        });
+
+        // Evitar el zoom en la página
+        document.body.addEventListener('keydown', function(e) {
+            if (e.key === '+' || e.key === '-') {
+                e.preventDefault();  // Prevenir el zoom
+            }
+        });
+    </script>
+</body>
+</html>
